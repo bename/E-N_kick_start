@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html style="font-family: 'Quicksand', sans-serif;">
+<body>
+
+<h1 class="header">Fronend test - Evyatar Ben Ami</h1>
+
+<input class="search_field input_field" id="search_input" placeholder="Search" onkeyup="search_table()"></input>
+
+<div style="display: flex;">
+	<table id="user_table" class="users_table"> 
+		<thead> 
+			<tr> 
+				<th>ID</th> 
+				<th>User name</th> 
+				<th>Adress</th>
+				<th>Delete</th>	
+			</tr> 
+			</thead> 
+			<tbody> 
+			<tr> 
+				<td>3023223</td> 
+				<td>Yosii</td> 
+				<td>Bat yam</td> 
+				<td><button class="delete_button" type="button" onClick="deleteCell(this)"> Delete </button></td>
+			</tr> 
+
+			<tr> 
+				<td>23123</td> 
+				<td>Roni</td> 
+				<td>Hadera</td> 
+				<td><button class="delete_button"  type="button" onClick="deleteCell(this)"> Delete </button></td>
+			</tr> 
+
+			<tr> 
+				<td>77779</td> 
+				<td>Eli</td> 
+				<td>Nes ziona</td> 
+				<td><button class="delete_button" type="button" onClick="deleteCell(this)"> Delete </button></td>
+			</tr> 
+
+			<tr> 
+				<td>3231</td> 
+				<td>Benni</td> 
+				<td>Rishpon</td> 
+				<td><button class="delete_button" type="button" onClick="deleteCell(this)"> Delete </button></td>
+			</tr> 
+			<tr> 
+				<td>1</td> 
+				<td>Meir</td> 
+				<td>Ho</td> 
+				<td ><button class="delete_button"  type="button" onClick="deleteCell(this)"> Delete </button></td>
+			</tr> 
+		</tbody> 
+	</table> 
+
+
+	<div class="input_div">
+		<input class="input_field" id="user_id" placeholder="ID"></input>
+		<input class="input_field" id="user_addres" placeholder="Adress"></input>
+		<input class="input_field" id="user_name" placeholder="User name"></input>
+		<button class="add_user" onclick="add_user()">Add user</button>
+	</div>
+</div>
+<div class="page_buttons_div" id="pagination"></div>
+
+<script>
+
+// Add new user details
+function add_user() {
+
+	var table = document.getElementById("user_table");
+	var user_name = document.getElementById("user_name").value;
+	var user_addres = document.getElementById("user_addres").value;
+	var user_id = document.getElementById("user_id").value;
+	
+	if(user_id && user_name && user_addres){
+
+		// Create an empty <tr> element and add it to the last position of the table
+		var row = table.insertRow(-1);
+
+		// Insert new cells table
+		var cell1 = row.insertCell(0);
+		var cell2 = row.insertCell(1);
+		var cell3 = row.insertCell(2);
+		var cell4 = row.insertCell(3);
+
+		// Add some data the new cells:
+		cell1.innerHTML = user_id;
+		cell2.innerHTML = user_name;
+		cell3.innerHTML = user_addres;
+		cell4.innerHTML = '<button class="delete_button"  type="button" onClick="deleteCell(this)"> Delete </button>';
+		
+		document.getElementById("user_id").value = ''
+		document.getElementById("user_name").value = ''
+		document.getElementById("user_addres").value = ''
+
+		calc_pagination()
+	}
+}
+
+// Delete row from table
+function deleteCell(row){
+
+	// Parent -> <td> -> Parent -> <tr>
+	document.getElementById("user_table").deleteRow(row.parentNode.parentNode.rowIndex);
+	calc_pagination()
+}
+
+// Search table
+function search_table() {
+
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("search_input");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("user_table");
+  tr = table.getElementsByTagName("tr");
+  cells = table.getElementsByTagName('td');
+  
+  // Iterate on each row and each td and look for a match
+  for (var i = 0; i < tr.length; i++) {
+    var cells = tr[i].getElementsByTagName('td')
+	for (var cell = 0; cell < cells.length -1; cell++) {
+		let txtValue = cells[cell].innerHTML
+		if (txtValue.toUpperCase().indexOf(filter) > -1) {
+			tr[i].style.display = "";
+			break
+		} 
+		else {
+			tr[i].style.display = "none";
+		}
+	}
+  }
+  
+  // If typing hide pagination
+  if(input.value != ''){
+	pagination.style.display = "none"
+  }
+  
+  // If input is empty return pagination
+  else{
+	pagination.style.display = ""
+	calc_pagination()
+	  show_page(1, 3)
+  }
+  	
+}
+
+// Create buttons for pagination
+function calc_pagination(){
+
+	table = document.getElementById("user_table");
+	tr = table.getElementsByTagName("tr");
+	number_of_pages = Math.ceil((tr.length - 1) / 3)
+	pagination = document.getElementById("pagination");
+	
+	// Remove all pages buttons for later build
+	let page_numbers = document.getElementsByClassName("page_element");
+	let number_of_buttons = page_numbers.length
+	document.querySelectorAll('.page_element').forEach(function(a){
+		a.remove()
+	})
+	
+	// Build and append new buttons
+	for(let page=1; page<=number_of_pages; page++){
+		var node = document.createElement("button");
+		node.classList.add('page_element')
+		var textnode = document.createTextNode(page);
+		node.appendChild(textnode);   
+		document.getElementById("pagination").appendChild(node); 
+		node.onclick = function(){show_page(page, 3)}
+	}
+	
+	show_page(1, 3)
+}
+
+// This function shows the rows in corelation to the page number_of_buttons
+// row_per_page -> How many rows will show
+// page -> the page to move to
+function show_page(page, row_per_page){
+	
+	// Add clicked button style and remove others
+	document.querySelectorAll('.page_element').forEach(function(a){
+	if(a.textContent == page){
+		a.classList.add('btn-active')
+	}
+	else{
+		a.classList.remove('btn-active')
+	}
+	})
+	
+	// Show row that are in the page selected and conceal the rest
+	tr = table.getElementsByTagName("tr");
+	
+	for (var i = 1; i < tr.length; i++) {
+		let row = tr[i]
+		let row_index = row.rowIndex
+		if((row_index <= page*row_per_page) && (row_index > page*row_per_page - row_per_page)){
+		row.style.display = "";
+		}
+		else{
+		row.style.display = "none";
+		}
+	}
+}
+
+// Init calc pagination and go to firt page
+calc_pagination()
+show_page(1, 3)
+
+</script> 
+
+<style>
+.delete_button:hover{
+	opacity: 0.8;
+}
+.delete_button{
+	height: 25px;
+	width: 55px;
+	cursor: pointer;
+	border: none;
+	border-radius: 2px;
+	color: white;
+	background: indianred
+}
+.btn-active{
+	background: lightblue;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+td {
+  padding: 0.75rem;
+  text-align: left;
+  border: 1px solid darkgray;
+}
+th{
+  background: #3498db;
+  padding: 0.75rem;
+  text-align: left;
+  border: 2px solid #eee;
+}
+.users_table{
+	width: 40%;
+	margin-left: 7%;
+}
+.input_div{
+    display: inline-grid;
+	margin-left: 7%;
+}
+
+.no-match {
+ opacity: .2;
+}
+
+.page_buttons_div{
+	
+	margin: -10px 0 0 7%;
+    text-align: center;
+    width: 40%;
+}
+
+.search_field{
+	margin: 0 0 15px 7%;
+	    width: 189px;
+}
+
+.header{
+	margin-left: 7%;
+}
+
+.page_element {
+	cursor: pointer;
+	display:inline-block;
+	padding:0.3em 1.2em;
+	margin:0 0.1em 0.1em 0;
+	border:0.16em solid rgba(255,255,255,0);
+	border-radius:2em;
+	box-sizing: border-box;
+	text-decoration:none;
+	font-family:'Roboto',sans-serif;
+	font-weight:300;
+	color:black;
+	text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
+	text-align:center;
+	transition: all 0.2s;
+
+  }
+  
+  .input_field{
+	font: 15px/24px "Lato", Arial, sans-serif;
+    color: #333;
+    box-sizing: border-box;
+    letter-spacing: 1px;
+	border: 1px solid #ccc;
+    padding: 7px 14px 9px;
+    transition: 0.4s;
+}
+
+.add_user:hover{
+	opacity: 0.9;
+}
+
+.add_user{
+	cursor: pointer;
+	width: 45%;
+	margin: 19px auto;
+	display: inline-block;
+    padding: 0.7em 1.2em;
+    border-radius: 0.2em;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Roboto',sans-serif;
+    font-weight: 400;
+    color: #FFFFFF;
+    background-color: #3369ff;
+    box-shadow: inset 0 -0.6em 1em -0.35em rgba(0,0,0,0.17), inset 0 0.6em 2em -0.3em rgba(255,255,255,0.15), inset 0 0 0em 0.05em rgba(255,255,255,0.12);
+    text-align: center;
+    position: relative;
+}
+
+.page_element:hover{
+	background: lightblue;
+}
+}
+  }
+}
+</style>
+
+</body>
+</html>
