@@ -1,87 +1,116 @@
 <template>
-  <div >
-    <v-toolbar dark color="primary" style="top:0;">
-      <v-btn icon>
-        <v-icon>search</v-icon>
+  <div class="login_container">
+    <v-form
+      ref="form"
+      v-model="valid"
+      lazy-validation
+    >
+      <v-text-field
+        v-model="name"
+        :counter="10"
+        :rules="nameRules"
+        label="Name"
+        required
+      ></v-text-field>
+
+      <v-text-field
+        v-model="email"
+        :rules="emailRules"
+        label="E-mail"
+        required
+      ></v-text-field>
+
+      <v-select
+        v-model="select"
+        :items="items"
+        :rules="[v => !!v || 'Item is required']"
+        label="Item"
+        required
+      ></v-select>
+
+      <v-checkbox
+        v-model="checkbox"
+        :rules="[v => !!v || 'You must agree to continue!']"
+        label="Do you agree?"
+        required
+      ></v-checkbox>
+
+      <v-btn
+        dark
+        :disabled="!valid"
+        color="#4caf50"
+        class="mr-4"
+        @click="validate"
+      >
+        Validate
       </v-btn>
-      <v-toolbar-items class="hidden-sm-and-down">
-        <v-btn flat>צור קשר</v-btn>
-        <v-btn flat>פסקי דין</v-btn>
-        <v-btn flat>מאמרים</v-btn>
-        <v-btn flat>תחומי התמחות</v-btn>
 
+      <v-btn
+        dark
+        color="#ff5252"
+        class="mr-4"
+        @click="reset"
+      >
+        Reset Form
+      </v-btn>
 
-
-      </v-toolbar-items>
-      <v-spacer></v-spacer>
-
-
-      <v-toolbar-title class="white--text title">test</v-toolbar-title>
-
-      <v-toolbar-side-icon></v-toolbar-side-icon>
-
-
-
-    </v-toolbar>
-
-    <v-card style="position: absolute; width: 96%; top:11%; left:2%; text-align: right">
-
-
-      <v-card-text style="font-size: 24px;">test</v-card-text>
-
-     bla bla
-
-    </v-card>
-
-    <v-card class="makeAppointment">
-      <v-card-text>לתיאום פגישה</v-card-text>
-
-
-    </v-card>
+      <v-btn
+        dark
+        color="#fb8c00"
+        @click="resetValidation"
+      >
+        Reset Validation
+      </v-btn>
+    </v-form>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'HelloWorld',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
-    }
-  }
-}
+  export default {
+    data: () => ({
+      valid: true,
+      name: '',
+      nameRules: [
+        v => !!v || 'Name is required',
+        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+      ],
+      email: '',
+      emailRules: [
+        v => !!v || 'E-mail is required',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+      select: null,
+      items: [
+        'Item 1',
+        'Item 2',
+        'Item 3',
+        'Item 4',
+      ],
+      checkbox: false,
+    }),
+
+    methods: {
+      validate () {
+        this.$refs.form.validate()
+      },
+      reset () {
+        this.$refs.form.reset()
+      },
+      resetValidation () {
+        this.$refs.form.resetValidation()
+      },
+    },
+  };
 </script>
+<style>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.makeAppointment{
-  text-align: right;
-  position: absolute;
-  width: 18%;
-  height: 25%;
-  left: 3%;
-  top: 72%;
+.login_container{
+    width: 400px;
+    padding: 15px;
+    border: 1px solid orange;
+    position: relative;
+    margin: 0 auto;
+    top: 75px;
 }
 
-@media only screen and (max-width: 600px) {
-
-    .title {
-    font-size: 12px !important;
-    }
-
-}
 </style>
