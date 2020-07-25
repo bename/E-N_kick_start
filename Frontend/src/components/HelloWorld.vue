@@ -47,6 +47,15 @@
 
       <v-btn
         dark
+        color="#4caf50"
+        class="mr-4"
+        @click="test_epp"
+      >
+        Test EP
+      </v-btn>
+
+      <v-btn
+        dark
         color="#ff5252"
         class="mr-4"
         @click="reset"
@@ -66,6 +75,7 @@
 </template>
 
 <script>
+  import {make_server_request} from '../request_manager'
   export default {
     data: () => ({
       valid: true,
@@ -99,6 +109,12 @@
       resetValidation () {
         this.$refs.form.resetValidation()
       },
+      test_epp: function() {
+        make_server_request("login").then((response)=>{
+          console.log(response)
+        })
+
+      }
     },
   };
 </script>
