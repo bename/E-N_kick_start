@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let endPoint = '139.162.208.159:8080';
+let endPoint = ':8080';
 let url = '';
 let post_data = {};
 let headers = {}
